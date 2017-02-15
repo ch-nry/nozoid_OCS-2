@@ -28,7 +28,7 @@
 DueFlashStorage dueFlashStorage;
 
 // global variables
-static int32_t audio_out, audio_out2, audio_inL, audio_inR2, audio_inR;
+int32_t audio_out, audio_out2, audio_inL, audio_inR2, audio_inR;
 
 // in_ADC
 uint32_t adc_value[34], adc_value16[34], adc_value_accum[34];
