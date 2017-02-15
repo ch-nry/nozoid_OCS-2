@@ -33,8 +33,8 @@ inline void LFO1_freq() {
   freq >>= 10;
   freq <<= LFO1_range;
   freq += LFO1_offset;
-  LFO1_increment = freq;
-  LFO1_increment = (MIDI_LFO1_speed != 0)? MIDI_LFO1_speed: LFO1_increment;
+  //LFO1_increment = freq;
+  LFO1_increment = (MIDI_LFO1_speed != 0)? MIDI_LFO1_speed: freq;
 }
 
 inline void LFO1_modulation() {
@@ -168,9 +168,10 @@ inline void LFO3_freq() {
   int32_t tmp;
   
   freq = adc_value16[LFO3_FQ];
-  tmp = (adc_value16[LFO3_MOD] * modulation_data[modulation_index[index_LFO3_MOD]]);
-  freq += (tmp^0x80000000)>>16;
-  freq = (freq < 0x00007FFF)? 0x00000000 : freq-0x00007FFF;
+  tmp = adc_value[LFO3_MOD] * modulation_data[modulation_index[index_LFO3_MOD]];
+  freq += tmp>>14;
+  freq += 1<<20;
+  freq = (freq < 0x000FFFFF)? 0x00000000 : freq-0x000FFFFF;
   freq = (freq > 0x0000FFFF)? 0x0000FFFF : freq;
 
   freq *= freq;

@@ -68,8 +68,8 @@ inline void VCO1_freq() {
   freq += tmpS;
   freq += KEY_LOCAL;
   
-  freq += (1<<26);
-  
+  freq += (1<<26) + 0x10000000;
+  freq = freq<0x10000000?0:freq-0x10000000;
   freq = (freq>0X0FFFFFFF)? 0X0FFFFFFF: freq;
   
   VCO1_fq = freq; // saved for link mode
