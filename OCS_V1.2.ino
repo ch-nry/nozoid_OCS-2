@@ -113,7 +113,7 @@ void setup() {
   init_led();
   init_analog_out();
   init_random();
-  init_analog_in();
+  init_analog_in(); 
   init_keyboard();
   init_WF();
   init_midi();
@@ -158,24 +158,24 @@ inline void main_loop() { // as fast as possible
   analog_start_1(); // start 1 sample
   VCO1_freq();
   VCO2_freq();
-  
-  #ifdef syncro_out
-    test2_off();
-  #endif  
+
   
   VCF_freq();
   LFO3_freq();
   CVG_mod();
   LFO1_modulation();
-  analog_get_1(); // get 1 sample
-  analog_start_1(); // start 2nd sample
   LFO2_modulation();
   LFO3_modulation();
   ENVELOPE_modulation();
-  MIDI_in();
   LFO1_freq();
+  #ifdef syncro_out
+    test2_off();
+  #endif  
+  analog_get_1(); // get 1 sample
+  analog_start_1(); // start 2nd sample
   LFO2_freq();
-  PORTAMENTO_update();
+  MIDI_in();
+  PORTAMENTO_update(); 
   ADSR_update();
   VCA_update();
   EFFECT_update();
