@@ -607,7 +607,7 @@ inline void keyboard_in() {
             masque_led = 0xFFFFFFFF;
           break;
           case 5:
-            test_Y_N = MIX_type;
+            test_Y_N = !MIX_type;
             masque_led = 0xFFFFFFFF;
           break;
           case 6: // Filter type and effect type
