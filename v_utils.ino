@@ -63,6 +63,13 @@ uint32_t out;
   return(out);
 }
 
+inline uint32_t clip_ana_low17(uint32_t in) {
+uint32_t out;
+  out = (in < 0x200)? 0: in - 0x200;
+  //out = max(in,0x100)-0x100; //slower
+  return(out);
+}
+
 
 inline uint32_t clip_anaLH(uint32_t in) { 
 uint32_t out;
@@ -98,6 +105,17 @@ inline uint32_t hysteresis16(uint32_t in, uint32_t old) {
   
   out = (tmp >  128)? in-128: old; 
   out = (tmp < -128)? in+128: out;
+
+  return(out);
+}
+
+inline uint32_t hysteresis17(uint32_t in, uint32_t old) {
+  int32_t tmp;
+  uint32_t out;
+  tmp = in-old;
+  
+  out = (tmp >  256)? in-256: old; 
+  out = (tmp < -256)? in+256: out;
 
   return(out);
 }
