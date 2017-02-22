@@ -25,6 +25,8 @@ uint32_t white1, white2;
 uint32_t dephasage12, dephasage13, dephasage14;
 uint32_t dephasage22, dephasage23, dephasage24;
 uint32_t VCO1_out_save, VCO2_out_save;
+uint32_t mod1_vco1_filter, mod1_vco2_filter, mod2_vco1_filter, mod2_vco2_filter;
+
 
 inline void init_VCO() {
   VCO1_WF = 0;
@@ -50,9 +52,13 @@ inline void VCO1_freq() {
   int32_t tmpS;
   uint32_t mod1, mod2;
 
-  mod1 = clip_ana_low(adc_value[VCO1_MOD1]);
-  mod2 = clip_ana_low(adc_value[VCO1_MOD2]);
-  
+  mod1 = hysteresis16(adc_value16[VCO1_MOD1], mod1_vco1_filter);
+  mod1_vco1_filter = mod1;
+  mod1 = clip_ana_low16(mod1);
+  mod2 = hysteresis16(adc_value16[VCO1_MOD2], mod2_vco1_filter);
+  mod2_vco1_filter = mod2;
+  mod2 = clip_ana_low16(mod2);
+
   freq1_old = hysteresis16(adc_value16[VCO1_FQ], freq1_old);
   freq = freq1_old;
 
@@ -62,10 +68,9 @@ inline void VCO1_freq() {
   freq >>= VCO_FQ_reduce;
   freq += VCO_FQ_offset;
   
-  tmpS  = (mod1 * modulation_data[modulation_index[index_VCO1_MOD1]]);
-  tmpS += (mod2 * modulation_data[modulation_index[index_VCO1_MOD2]]);
-  tmpS >>= 2;
-  freq += tmpS;
+  tmpS  = ((mod1>>3) * modulation_data[modulation_index[index_VCO1_MOD1]]);
+  tmpS += ((mod2>>3) * modulation_data[modulation_index[index_VCO1_MOD2]]);
+  freq += tmpS>>3;
   freq += KEY_LOCAL;
   
   freq += (1<<26) + 0x10000000;
@@ -93,8 +98,12 @@ inline void VCO2_freq() {
   int32_t tmpS;
   uint32_t mod1, mod2;
 
-  mod1 = clip_ana_low(adc_value[VCO2_MOD1]);
-  mod2 = clip_ana_low(adc_value[VCO2_MOD2]);
+  mod1 = hysteresis16(adc_value16[VCO2_MOD1], mod1_vco2_filter);
+  mod1_vco2_filter = mod1;
+  mod1 = clip_ana_low16(mod1);
+  mod2 = hysteresis16(adc_value16[VCO2_MOD2], mod2_vco2_filter);
+  mod2_vco2_filter = mod2;
+  mod2 = clip_ana_low16(mod2);
   
   freq2_old = hysteresis16(adc_value16[VCO2_FQ], freq2_old);
   freq = freq2_old;
@@ -104,22 +113,24 @@ inline void VCO2_freq() {
     freq = (freq > 0xFEFF)? 0xFEFF: freq;
     freq += freq >> 15; 
     freq += freq >> 8;
-    freq = VCO1_fq + (192*freq);
+    freq = VCO1_fq + (192*freq) + 0x10000000;
   }
   else {    
     freq <<= 10; // 27 significant bit
     freq += (freq>>1);// + (freq>>2);
     freq >>= VCO_FQ_reduce;
     freq += VCO_FQ_offset;
-    freq += (1<<26);
+    freq += (1<<26) + 0x10000000;
     freq += KEY_LOCAL;
   }
   
-  tmpS  = (mod1 * modulation_data[modulation_index[index_VCO2_MOD1]]);
-  tmpS += (mod2 * modulation_data[modulation_index[index_VCO2_MOD2]]);
-  tmpS >>= 2;
-  freq += tmpS;
+  tmpS  = ((mod1>>3) * modulation_data[modulation_index[index_VCO2_MOD1]]);
+  tmpS += ((mod2>>3) * modulation_data[modulation_index[index_VCO2_MOD2]]);
+  freq += tmpS>>3;
   
+  freq = freq<0x10000000?0:freq-0x10000000;
+  freq = (freq>0X0FFFFFFF)? 0X0FFFFFFF: freq;
+
   VCO2_fq = freq; // for white noise filter
   
   freq_MSB = freq >> 18; // keep the 1st 10 bits
