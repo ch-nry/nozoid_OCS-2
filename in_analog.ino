@@ -77,7 +77,7 @@ inline void init_analog_in() {
   PIOA->PIO_PUDR = (1 << 22) + (1 << 23) + (1 << 24) + (1 << 6);
   PIOB->PIO_PUDR = (1 << 19) + (1 << 20);
   
-  REG_ADC_MR  = 0x3F030F00; //0x3F030F00
+  REG_ADC_MR  = 0x3F331F00; //0x3F030F00
   REG_ADC_EMR = 0x00000000;
   adc_channel = 0;
 
