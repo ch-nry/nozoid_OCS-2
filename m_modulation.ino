@@ -24,7 +24,7 @@ inline void update_ext() {
 uint32_t tmp;
 
   #ifdef EXT_ANA
-    tmp = hysteresis16(adc_value16[EXT_1], ext1_filter);
+    tmp = hysteresis16(adc_value16[EXT_1], ext1_filter); // TODO : move it to analog in loop 
     ext1_filter = tmp;
     modulation_data[mod_EXT1] = 3*(tmp-(1<<15));
     
