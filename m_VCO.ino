@@ -52,7 +52,7 @@ inline void VCO1_freq() {
   int32_t tmpS;
   uint32_t mod1, mod2;
 
-  mod1 = hysteresis16(adc_value16[VCO1_MOD1], mod1_vco1_filter);
+  mod1 = hysteresis16(adc_value16[VCO1_MOD1], mod1_vco1_filter); // TODO : move it to analog in loop 
   mod1_vco1_filter = mod1;
   mod1 = clip_ana_low16(mod1);
   mod2 = hysteresis16(adc_value16[VCO1_MOD2], mod2_vco1_filter);
@@ -80,7 +80,7 @@ inline void VCO1_freq() {
   VCO1_fq = freq; // saved for link mode
   
   freq_MSB = freq >> 18; // keep the 1st 10 bits
-  freq_LSB = freq & 0x3FFFF; // other 18 bits
+  freq_LSB = freq & 0x3FFFF; // other 18  bits
   increment1 = table_CV2increment[freq_MSB];
   increment2 = table_CV2increment[freq_MSB+1];
   increment2 -= increment1;
