@@ -108,13 +108,22 @@ inline void analog_start_1() {
 inline void analog_in() {
   uint32_t tmp;
   // filter the analog data
-  tmp = adc_value_filter[adc_channel] << 3;
-  tmp -= adc_value_filter[adc_channel];
-  tmp += adc_value_accum[adc_channel] << 9; // already 1 bit because of 2 samples
-  tmp >>= 3;
-  adc_value_filter[adc_channel] = tmp;
+  if(adc_channel<EXT_1) {
+    tmp = adc_value_filter[adc_channel] << 3;
+    tmp -= adc_value_filter[adc_channel];
+    tmp += adc_value_accum[adc_channel] << 9; // already 1 bit because of 2 samples
+    tmp >>= 3;
+    adc_value_filter[adc_channel] = tmp;
+    tmp >>= 6;
+  } 
+  else {
+    tmp = adc_value_filter[adc_channel];
+    tmp += adc_value_accum[adc_channel] << 7; // already 1 bit because of 2 samples
+    tmp >>= 1;
+    adc_value_filter[adc_channel] = tmp;
+    tmp >>= 4;  
+  }
   
-  tmp >>= 6;
   tmp += MIDI_fader[adc_channel];
   tmp = (tmp & 0xFFFF0000)? 0x0000FFFF: tmp; // test de depassement a cause du MIDI
   
