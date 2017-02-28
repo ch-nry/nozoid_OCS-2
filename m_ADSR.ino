@@ -70,6 +70,7 @@ inline void ADSR_update() {
     else if (ADSR_status_local == 2) { // we got a gate, but use to be in release mode, so we start an attack
       ADSR_status_local=0;
       ADSR_goal_local = ADSR_Goal_value;
+      if (sync_LFO1) LFO1_phase = 0; // reset LFO phase if needed
     }
   }
   
@@ -86,6 +87,8 @@ inline void ADSR_update() {
     break;
   }
   tmp = (table_CV2freq[0x2B0-(tmp>>7)]);
+  
+  
   
   noInterrupts();
   ADSR_status = ADSR_status_local;
