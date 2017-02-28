@@ -120,18 +120,18 @@ inline void MIDI_in() { // the main loop is faster than midi message, no need to
           else if (MIDI_data1 == 41) { // LFO1 LSB
             MIDI_LFO1_speed_LSB = MIDI_data2;
           }
-          else if (MIDI_data1 == 42) { // LFO1 MSB
+          else if (MIDI_data1 == 42) { // LFO2 MSB
             tmp = ((MIDI_data2 << 7) + MIDI_LFO2_speed_LSB);
             MIDI_LFO2_speed = (tmp == 0)? 0 : 89478485 / tmp;
           }
-          else if (MIDI_data1 == 43) { // LFO1 LSB
+          else if (MIDI_data1 == 43) { // LFO2 LSB
             MIDI_LFO2_speed_LSB = MIDI_data2;
           }
-          else if (MIDI_data1 == 44) { // LFO1 MSB
+          else if (MIDI_data1 == 44) { // LFO3 MSB
             tmp = ((MIDI_data2 << 7) + MIDI_LFO3_speed_LSB);
             MIDI_LFO3_speed = (tmp == 0)? 0 : 89478485 / tmp;
           }
-          else if (MIDI_data1 == 45) { // LFO1 LSB
+          else if (MIDI_data1 == 45) { // LFO3 LSB
             MIDI_LFO3_speed_LSB = MIDI_data2;
           }
         }
