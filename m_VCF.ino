@@ -69,7 +69,7 @@ inline void VCF_freq() {
   mod2 = clip_ana_low(adc_value[VCF_MOD2]);
   tmpS  = (mod1 * modulation_data[modulation_index[index_VCF_MOD1]]);
   tmpS += (mod2 * modulation_data[modulation_index[index_VCF_MOD2]]);
-  tmp += tmpS;
+  tmp += tmpS<<1;
   tmp_interpol1 = (tmp > 0x7DE80000)? 0x7DE80000: tmp; 
   
   tmp_interpol2 = tmp_interpol1 & 0x001FFFFF; //21 low byte
