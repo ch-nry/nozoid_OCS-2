@@ -24,15 +24,15 @@ inline void update_ext() {
 uint32_t tmp;
 
   #ifdef EXT_ANA
-    tmp = hysteresis16(adc_value16[EXT_1], ext1_filter); // TODO : move it to analog in loop 
+    tmp = hysteresis15(adc_value16[EXT_1], ext1_filter); // TODO : move it to analog in loop 
     ext1_filter = tmp;
     modulation_data[mod_EXT1] = 3*(tmp-(1<<15));
     
-    tmp = hysteresis16(adc_value16[EXT_2], ext2_filter);
+    tmp = hysteresis15(adc_value16[EXT_2], ext2_filter);
     ext2_filter = tmp;    
     modulation_data[mod_EXT2] = 3*(tmp-(1<<15));
     
-    tmp = hysteresis16(adc_value16[EXT_3], ext3_filter);
+    tmp = hysteresis15(adc_value16[EXT_3], ext3_filter);
     ext3_filter = tmp;
     modulation_data[mod_EXT3] = 3*(tmp-(1<<15));
   #endif
@@ -42,15 +42,15 @@ uint32_t tmp;
     modulation_data[mod_EXT3] = MIDI_CC2-(1<<15);
   #endif
   #ifdef EXT_AUTO
-    tmp = hysteresis16(adc_value16[EXT_1], ext1_filter);
+    tmp = hysteresis15(adc_value16[EXT_1], ext1_filter);
     ext1_filter = tmp;
     modulation_data[mod_EXT1] = (use_midi_pitchwheel == 0)? 3*(tmp-(1<<15)):MIDI_PITCHWHEEL-(1<<15); // attention, les modulation peuvent etre superieur a 16 bit
     
-    tmp = hysteresis16(adc_value16[EXT_2], ext2_filter);
+    tmp = hysteresis15(adc_value16[EXT_2], ext2_filter);
     ext2_filter = tmp;    
     modulation_data[mod_EXT2] = (use_midi_mod_wheel == 0)?  3*(tmp-(1<<15)):MIDI_MODWHEEL-(1<<15);
     
-    tmp = hysteresis16(adc_value16[EXT_3], ext3_filter);
+    tmp = hysteresis15(adc_value16[EXT_3], ext3_filter);
     ext3_filter = tmp;
     modulation_data[mod_EXT3] = (use_midi_cc2 == 0)?        3*(tmp-(1<<15)):MIDI_CC2-(1<<15);
   #endif

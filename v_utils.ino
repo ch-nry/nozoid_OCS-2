@@ -98,6 +98,28 @@ inline uint32_t hysteresis(uint32_t in, uint32_t old) {
   return(out);
 }
 
+inline uint32_t hysteresis14(uint32_t in, uint32_t old) {
+  int32_t tmp;
+  uint32_t out;
+  tmp = in-old;
+  
+  out = (tmp >  32)? in-32: old; 
+  out = (tmp < -32)? in+32: out;
+
+  return(out);
+}
+
+inline uint32_t hysteresis15(uint32_t in, uint32_t old) {
+  int32_t tmp;
+  uint32_t out;
+  tmp = in-old;
+  
+  out = (tmp >  64)? in-64: old; 
+  out = (tmp < -64)? in+64: out;
+
+  return(out);
+}
+
 inline uint32_t hysteresis16(uint32_t in, uint32_t old) {
   int32_t tmp;
   uint32_t out;
