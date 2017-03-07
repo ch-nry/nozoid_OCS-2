@@ -30,6 +30,7 @@
  
 uint32_t adc_channel;
 uint32_t adc_value_filter[34];
+uint32_t median_data[3][2];
  
 inline void put_ADD_ADC1(uint32_t address) { 
   if (address & 0b001) PORTADC1OUT1->PIO_SODR = 1<<ADC1OUT1; else PORTADC1OUT1->PIO_CODR = 1<<ADC1OUT1;
@@ -106,7 +107,7 @@ inline void analog_start_1() {
 }
 
 inline void analog_in() {
-  uint32_t tmp;
+  uint32_t tmp, tmp2, median_1, median_2, median_3;
   // filter the analog data
   if(adc_channel<EXT_1) {
     tmp = adc_value_filter[adc_channel] << 3;
@@ -121,7 +122,15 @@ inline void analog_in() {
     tmp += adc_value_accum[adc_channel] << 7; // already 1 bit because of 2 samples
     tmp >>= 1;
     adc_value_filter[adc_channel] = tmp;
-    tmp >>= 4;  
+    tmp >>= 4;
+    
+    tmp2 = adc_channel - EXT_1; // 0, 1 ou 2
+    median_1 = median_data[tmp2][0];
+    median_2 = median_data[tmp2][1];
+    median_3 = tmp;
+    tmp = median3(median_1, median_2, median_3);
+    median_data[tmp2][0] = median_2;
+    median_data[tmp2][1] = median_3;
   }
   
   tmp += MIDI_fader[adc_channel];

@@ -189,3 +189,14 @@ inline uint32_t MIX16U(uint32_t src, uint32_t dest, uint32_t factor) {
   tmp += src;
   return(tmp);
 }
+
+inline uint32_t median3 (uint32_t last3, uint32_t last2, uint32_t last1) {
+ /*
+  uint32_t min3, max3, median;
+ min3 = min(min(last1, last2), last3);
+ max3 = max(max(last1, last2), last3);
+ median = last1 + last2 + last3 - min3 - max3;
+ */
+ return(max(max(min(last1, last2), min(last1, last3)),min(last3, last2)));
+}
+
