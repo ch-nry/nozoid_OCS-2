@@ -117,24 +117,18 @@ inline void analog_in() {
     adc_value_filter[adc_channel] = tmp;
     tmp >>= 6;
   } 
-  else {
-    tmp = adc_value_filter[adc_channel];
-    tmp += adc_value_accum[adc_channel] << 7; // already 1 bit because of 2 samples
-    tmp >>= 1;
-    adc_value_filter[adc_channel] = tmp;
-    tmp >>= 4;
-    
+  else {    
     tmp2 = adc_channel - EXT_1; // 0, 1 ou 2
     median_1 = median_data[tmp2][0];
     median_2 = median_data[tmp2][1];
-    median_3 = tmp;
+    median_3 = adc_value_accum[adc_channel] << 3; // 13 bit + 3
     tmp = median3(median_1, median_2, median_3);
     median_data[tmp2][0] = median_2;
     median_data[tmp2][1] = median_3;
   }
   
   tmp += MIDI_fader[adc_channel];
-  tmp = (tmp & 0xFFFF0000)? 0x0000FFFF: tmp; // test de depassement a cause du MIDI
+  tmp = min(tmp, 0xFFFF); //(tmp & 0xFFFF0000)? 0x0000FFFF: tmp; // test de depassement a cause du MIDI
   
   adc_value[adc_channel] = tmp >> 4;
   adc_value16[adc_channel] = tmp;
