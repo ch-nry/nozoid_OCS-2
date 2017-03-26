@@ -166,20 +166,29 @@ inline void init_LFO3() {
 inline void LFO3_freq() { 
   uint32_t freq;
   int32_t tmp;
+  if (MIDI_LFO_FQ == 0) {
+    freq = adc_value16[LFO3_FQ];
+    tmp = adc_value[LFO3_MOD] * modulation_data[modulation_index[index_LFO3_MOD]];
+    freq += tmp>>14;
+    freq += 1<<20;
+    freq = (freq < 0x000FFFFF)? 0x00000000 : freq-0x000FFFFF;
+    freq = (freq > 0x0000FFFF)? 0x0000FFFF : freq;
   
-  freq = adc_value16[LFO3_FQ];
-  tmp = adc_value[LFO3_MOD] * modulation_data[modulation_index[index_LFO3_MOD]];
-  freq += tmp>>14;
-  freq += 1<<20;
-  freq = (freq < 0x000FFFFF)? 0x00000000 : freq-0x000FFFFF;
-  freq = (freq > 0x0000FFFF)? 0x0000FFFF : freq;
-
-  freq *= freq;
-  freq >>= 10;
-  freq += 1500;
-  LFO3_increment = freq;
-  
-  LFO3_increment = (MIDI_LFO3_speed != 0)? MIDI_LFO3_speed: LFO3_increment;
+    freq *= freq;
+    freq >>= 10;
+    freq += 1500;
+    LFO3_increment = freq;
+    
+    LFO3_increment = (MIDI_LFO3_speed != 0)? MIDI_LFO3_speed: LFO3_increment;
+  }
+  else {
+    //LFO3_increment = MIDI_LFO_FQ;
+    tmp = MIDI_LFO_FQ;
+    freq = adc_value16[LFO3_FQ] >> 13;
+    tmp <<= freq;
+    tmp >>= 3;
+    LFO3_increment = tmp;
+  }
 }
 
 inline void LFO3_modulation() {
@@ -239,4 +248,5 @@ inline void LFO3_modulation() {
 
 inline void LFO3() {
   LFO3_phase += LFO3_increment;
+  if (LFO3_MIDI_count++ == 0) LFO3_MIDI_count = 0;
 }
