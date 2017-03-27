@@ -679,7 +679,9 @@ inline void keyboard_in() {
           break;
         } 
       }
-      save_conf(0);
+      #ifndef nosave
+        flash_lock_bit = 1;
+      #endif
     }
     else { // note keyboard Mode
       KEY_LOCAL_tmp = 0;

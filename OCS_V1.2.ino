@@ -94,6 +94,9 @@ uint32_t GATE_mode, VCO_link, RINGMOD, VCF_pitch, sync_LFO1, cvg_type, MIX_type;
 // env follower
 uint32_t envelope;
 
+// save
+uint32_t flash_lock_bit;
+
 void setup() {
   uint32_t i;
 
@@ -104,8 +107,6 @@ void setup() {
 
   REG_SUPC_SMMR = 0x0000110B; // suply monitor reset at 3V
   REG_SUPC_MR = 0xA5005A00;
-
-  EFC0->EEFC_FMR = 0X00000400; // mandatory to keep program speed when loading the dueFlashStorage library. go wonder why.
 
   init_dac();
 
@@ -138,6 +139,8 @@ void setup() {
   
   test(); // hardware test mode
  
+  EFC0->EEFC_FMR = 0X00000400; // mandatory to keep program speed when loading the dueFlashStorage library. go wonder why.
+
   start_dac();
   
   while (true) main_loop(); // do not go into arduino loop
@@ -151,15 +154,18 @@ inline void main_loop() { // as fast as possible
   #ifdef syncro_out
     test2_on();
   #endif
-  
   analog_in();
-  keyboard_in();
+  
+  if (flash_lock_bit == 0) 
+    keyboard_in();
+  else
+    if (efc_perform_command_is_ready(EFC1))
+      save_conf0();
+ 
   WF_in();
   analog_start_1(); // start 1 sample
   VCO1_freq();
   VCO2_freq();
-
-  
   VCF_freq();
   LFO3_freq();
   CVG_mod();
