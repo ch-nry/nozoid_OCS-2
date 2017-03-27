@@ -55,8 +55,8 @@ inline void init_save() {
     load_default_config();
   #endif
   
-  if (!(PORTKEY25->PIO_PDSR & (1<<KEY25)) || dueFlashStorage.read(0)) { // errase assignations and conf
-    dueFlashStorage.write(0, 0); // to remember that configuration is already done
+  if (!(PORTKEY25->PIO_PDSR & (1<<KEY25)) || read(0)) { // errase assignations and conf
+    write(0, 0); // to remember that configuration is already done
     load_default_config();
     save_conf(0);
     save_conf(1);
@@ -103,14 +103,14 @@ inline void save_conf(uint32_t nb) {
     byte7 += sync_LFO1 << 1;
     byte7 += MIX_type;
     
-    if ( (current_byte1 != byte1) || (nb != 0) ) { dueFlashStorage.write(1+8*nb, byte1); current_byte1 = byte1; }
-    if ( (current_byte2 != byte2) || (nb != 0) ) { dueFlashStorage.write(2+8*nb, byte2); current_byte2 = byte2; }
-    if ( (current_byte3 != byte3) || (nb != 0) ) { dueFlashStorage.write(3+8*nb, byte3); current_byte3 = byte3; }
-    if ( (current_byte4 != byte4) || (nb != 0) ) { dueFlashStorage.write(4+8*nb, byte4); current_byte4 = byte4; }
-    if ( (current_byte5 != byte5) || (nb != 0) ) { dueFlashStorage.write(5+8*nb, byte5); current_byte5 = byte5; }
-    if ( (current_byte6 != byte6) || (nb != 0) ) { dueFlashStorage.write(6+8*nb, byte6); current_byte6 = byte6; }
-    if ( (current_byte7 != byte7) || (nb != 0) ) { dueFlashStorage.write(7+8*nb, byte7); current_byte7 = byte7; }
-    if ( (current_byte8 != byte8) || (nb != 0) ) { dueFlashStorage.write(8+8*nb, byte8); current_byte8 = byte8; }
+    if ( (current_byte1 != byte1) || (nb != 0) ) { write(1+8*nb, byte1); current_byte1 = byte1; }
+    if ( (current_byte2 != byte2) || (nb != 0) ) { write(2+8*nb, byte2); current_byte2 = byte2; }
+    if ( (current_byte3 != byte3) || (nb != 0) ) { write(3+8*nb, byte3); current_byte3 = byte3; }
+    if ( (current_byte4 != byte4) || (nb != 0) ) { write(4+8*nb, byte4); current_byte4 = byte4; }
+    if ( (current_byte5 != byte5) || (nb != 0) ) { write(5+8*nb, byte5); current_byte5 = byte5; }
+    if ( (current_byte6 != byte6) || (nb != 0) ) { write(6+8*nb, byte6); current_byte6 = byte6; }
+    if ( (current_byte7 != byte7) || (nb != 0) ) { write(7+8*nb, byte7); current_byte7 = byte7; }
+    if ( (current_byte8 != byte8) || (nb != 0) ) { write(8+8*nb, byte8); current_byte8 = byte8; }
   }
 }
 
@@ -124,14 +124,14 @@ inline void load_conf(uint32_t nb) {
   if (true)
   #endif
   {
-    byte1 = dueFlashStorage.read(1+8*nb);
-    byte2 = dueFlashStorage.read(2+8*nb);
-    byte3 = dueFlashStorage.read(3+8*nb);
-    byte4 = dueFlashStorage.read(4+8*nb);
-    byte5 = dueFlashStorage.read(5+8*nb);
-    byte6 = dueFlashStorage.read(6+8*nb);
-    byte7 = dueFlashStorage.read(7+8*nb);
-    byte8 = dueFlashStorage.read(8+8*nb);
+    byte1 = read(1+8*nb);
+    byte2 = read(2+8*nb);
+    byte3 = read(3+8*nb);
+    byte4 = read(4+8*nb);
+    byte5 = read(5+8*nb);
+    byte6 = read(6+8*nb);
+    byte7 = read(7+8*nb);
+    byte8 = read(8+8*nb);
     modulation_index[index_VCA_MOD]   =  byte4       & 0x0F;
     modulation_index[index_LFO3_MOD]  = (byte4 >> 4) & 0x0F;
     modulation_index[index_VCF_MOD2]  =  byte3       & 0x0F;
