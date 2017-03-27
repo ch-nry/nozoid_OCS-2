@@ -161,6 +161,7 @@ inline void LFO2() {
 
 inline void init_LFO3() {
   LFO3_phase = 0x80000000;
+  MIDI_LFO_FQ = 0;
 }
 
 inline void LFO3_freq() { 
@@ -196,6 +197,14 @@ inline void LFO3_freq() {
     tmp >>= 4;
     LFO3_increment = tmp;
   }
+  
+  #ifndef LFO3_NO_MIDI
+    tmp = LFO3_MIDI_count;
+    if (tmp > (1<<18)) { //about 6 sec
+      MIDI_LFO_FQ = 0; // do not use MIDI timming
+      tmp = (1<<18); // limit LFO3_MIDI_count to avoid roll back to 0
+    }
+  #endif
 }
 
 inline void LFO3_modulation() {
@@ -258,7 +267,6 @@ inline void LFO3() {
   LFO3_phase += LFO3_increment;
 
   #ifndef LFO3_NO_MIDI
-    tmp = LFO3_MIDI_count++;
-    if (tmp > (1<<18)) MIDI_LFO_FQ = 0; //about 6 sec
+    LFO3_MIDI_count++;
   #endif
 }
