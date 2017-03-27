@@ -19,6 +19,7 @@
 
 // sound caractere.  
 #define DAC_clear 1 // 1 for "clear", 0 for "fat"
+  // change a filter in the audio dac.
   
 // LFO1 Range
 #define LFO1_range 0 // 1 for extended range
@@ -65,6 +66,12 @@
 //#define EXT_ANA
 //#define EXT_MIDI
 
+// LFO3 MIDI Synchro
+// no : LFO3 never synchronize to midi
+// default : LFO3 synchro when a MIDI clock message is received
+//#define LFO3_NO_MIDI
+
+
 // do not save current preset, and load default config on every startup
 //#define nosave
 
@@ -72,7 +79,7 @@
 // analogue value range from about 0.5V to 2.8V 
 #define LFO_out
 
-// output syncro (audio / data loop) for benchmarck purpose 
+// output syncro (audio / data loop) for benchmarck purpose on the dedicated pin
 #define syncro_out
 
 // output GATE on the dedicated pin
