@@ -19,13 +19,12 @@
 //    along with OCS-2 firmware.  If not, see <http://www.gnu.org/licenses/>.
 // --------------------------------------------------------------------------
 
-#include <DueFlashStorage.h>
+#include <Arduino.h>
 #include "ARS.h"
 #include "conf.h"
 
 #pragma GCC optimize ("-O3")
 
-DueFlashStorage dueFlashStorage;
 
 // global variables
 int32_t audio_out, audio_out2, audio_inL, audio_inR2, audio_inR;
