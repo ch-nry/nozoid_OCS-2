@@ -166,7 +166,14 @@ inline void init_LFO3() {
 inline void LFO3_freq() { 
   uint32_t freq;
   int32_t tmp;
-  if (MIDI_LFO_FQ == 0) {
+  
+  #ifdef LFO3_NO_MIDI
+    if (true)
+  #endif
+  #ifndef LFO3_NO_MIDI
+    if (MIDI_LFO_FQ == 0) 
+  #endif
+  {
     freq = adc_value16[LFO3_FQ];
     tmp = adc_value[LFO3_MOD] * modulation_data[modulation_index[index_LFO3_MOD]];
     freq += tmp>>14;
@@ -186,7 +193,7 @@ inline void LFO3_freq() {
     tmp = MIDI_LFO_FQ;
     freq = adc_value16[LFO3_FQ] >> 13;
     tmp <<= freq;
-    tmp >>= 3;
+    tmp >>= 4;
     LFO3_increment = tmp;
   }
 }
@@ -247,6 +254,11 @@ inline void LFO3_modulation() {
 }
 
 inline void LFO3() {
+  uint32_t tmp;
   LFO3_phase += LFO3_increment;
-  if (LFO3_MIDI_count++ == 0) LFO3_MIDI_count = 0;
+
+  #ifndef LFO3_NO_MIDI
+    tmp = LFO3_MIDI_count++;
+    if (tmp > (1<<18)) MIDI_LFO_FQ = 0; //about 6 sec
+  #endif
 }
