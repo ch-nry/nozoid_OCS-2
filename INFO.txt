@@ -1,0 +1,21 @@
+Compile the code :
+– get the code there : https://github.com/ch-nry/OCS/tree/master
+– get the latest version of arduinio IDE (I’m using 1.7.10 from here : http://www.arduino.org/downloads)
+– make it work (on linux, I have to change COM1 to /dev/ttyACM0 in the config file, and a $sudo usermod -a -G dialout ). The arduino community is huge, so you will find on the internet how to solve any problem you could face.
+– optimize code speed at compilation (change all 3 occurrences of “-Os” to “-O3” in the configuration file : arduino package/hardware/arduino/sam/platfom.txt). This is VERY important. Otherwise, the code will be to slow and the synth will not work properly.
+– if needed, change some option in the conf.h file.
+– unplug the OCS synth power, and plug the programming usb plug of the arduino to the computer using a micro-usb cable.
+– compile and put the code in the arduino
+
+Hacking the code :
+You can build new modules, or do anything else you know how to.
+Don’t forget to share the result of your hack!
+
+Code explanation :
+The code is based on a low priority thread that samples input and computes all modulations, updates filter coefficients, etc.
+An interruption stops this thread for every audio sample received from the ADC. This audio loop cannot be interrupted. It generates a sample in about 10µs (+/- 1µs). When finished, the micro-controller goes back to the low priorities thread. This thread loops at about 12KHz. (modulations are computed at 12KHz).
+One fader is sampled at every loop of this thread. There are 34 analogue values, so all faders are updated at about 500Hz.
+
+Programming tips :
+– Use only unit32_t or int32_t type. Float are prohibited : the micro-controller cannot compute them fast enough.
+– The only mathematical instruction to use is addition, subtraction, 32 bit multiplication, 32 bit division and perhaps 32×32->64 bit multiplication (using the assembler routine). Everything else is prohibited since it’s not computed natively on the cortex processor.
