@@ -66,10 +66,13 @@ inline void MIDI_in() { // the main loop is faster than midi message, no need to
           LFO3_MIDI_count = 0;
         }
       }
+      else if ( (midi_data == 0xFA) && (MIDI_LFO_FQ != 0) ) { // start & LFO3 syncro sur le midi
+        LFO3_phase = 0;
+      }
     }
     else {
       led1_time = 150; // small blink
-
+      
       if (midi_data & 0x80) { // test for status
           MIDI_status = midi_data;
           MIDI_state = 1;
