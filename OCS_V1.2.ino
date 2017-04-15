@@ -62,7 +62,7 @@ uint32_t LFO3_WF;
 uint32_t LFO1_phase, LFO1_increment;
 uint32_t LFO2_phase, LFO2_increment;
 uint32_t LFO3_phase, LFO3_increment;
-uint32_t LFO3_MIDI_count;
+uint32_t LFO3_MIDI_count, LFO3_phase_distord;
 
 // module cvg
 //   Random

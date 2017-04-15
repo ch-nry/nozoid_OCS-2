@@ -188,6 +188,7 @@ inline void LFO3_freq() {
     LFO3_increment = freq;
     
     LFO3_increment = (MIDI_LFO3_speed != 0)? MIDI_LFO3_speed: LFO3_increment;
+    LFO3_phase_distord = 0;
   }
   else {
     //LFO3_increment = MIDI_LFO_FQ;
@@ -196,6 +197,7 @@ inline void LFO3_freq() {
     tmp <<= freq;
     tmp >>= 4;
     LFO3_increment = tmp;
+    LFO3_phase_distord = adc_value16[LFO3_MOD];
   }
   
   #ifndef LFO3_NO_MIDI
@@ -210,48 +212,54 @@ inline void LFO3_freq() {
 inline void LFO3_modulation() {
   uint32_t tmp, tmp2;
   uint32_t phaseL, phaseH;
+  uint32_t real_phase;
+
+  tmp = LFO3_phase >> 16;
+  tmp = (tmp*tmp) >> 16;
+  tmp2 = LFO3_phase - tmp*tmp;
+  real_phase = LFO3_phase - (tmp2>>16) * LFO3_phase_distord;
 
   switch (LFO3_WF) { 
   case 0: // sinus
-    tmp=table_cos[LFO3_phase >> 19];
+    tmp=table_cos[real_phase >> 19];
     tmp = (tmp >> 16) - (1<<15);     
     break;
   case 1: // tri
-    tmp = LFO3_phase >> 15;
+    tmp = real_phase >> 15;
     tmp = (tmp >= 0x10000)? 0x20000 - tmp: tmp;
     tmp -= (1<<15); 
     break;
   case 2: // saw up
-    tmp = LFO3_phase >> 16 ; // keep only 16bit
+    tmp = real_phase >> 16 ; // keep only 16bit
     tmp -= (1<<15); // To make it symetrical
     break;
   case 3: // saw down
-    tmp = LFO3_phase >> 16 ; // keep only 16bit
+    tmp = real_phase >> 16 ; // keep only 16bit
     tmp = (1<<15)-tmp; 
     break;
   case 4: // square
-    tmp = (LFO3_phase > 0x80000000)? (1<<15)-1: -(1<<15)+1;
+    tmp = (real_phase > 0x80000000)? (1<<15)-1: -(1<<15)+1;
     break;
   case 5: // impulse1
-    tmp = (LFO3_phase > 0xE0000000)? (1<<15)-1: -(1<<15)+1;
+    tmp = (real_phase > 0xE0000000)? (1<<15)-1: -(1<<15)+1;
     break;
   case 6: // 1 1 0 0 
-    tmp = (((LFO3_phase >>29) & 0b101) == 0b101)? (1<<15)-1: -(1<<15)+1;
+    tmp = (((real_phase >>29) & 0b101) == 0b101)? (1<<15)-1: -(1<<15)+1;
     break;
   case 7: // 1 1 1 0
-    tmp =  ((((LFO3_phase >>29) & 0b101) == 0b101) || (((LFO3_phase >>29) & 0b111 )== 0b011))? (1<<15)-1: -(1<<15)+1;
+    tmp =  ((((real_phase >>29) & 0b101) == 0b101) || (((real_phase >>29) & 0b111 )== 0b011))? (1<<15)-1: -(1<<15)+1;
     break;
   case 8: // 1 1 0 1 0 0
-    tmp = ((LFO3_phase < 0x15555555) || ((LFO3_phase > 0x2AAAAAAA) && (LFO3_phase < 0x3FFFFFFF)) || ((LFO3_phase > 0x7FFFFFFF) && (LFO3_phase < 0x95555555)) )? (1<<15)-1: -(1<<15)+1;
+    tmp = ((real_phase < 0x15555555) || ((real_phase > 0x2AAAAAAA) && (real_phase < 0x3FFFFFFF)) || ((real_phase > 0x7FFFFFFF) && (real_phase < 0x95555555)) )? (1<<15)-1: -(1<<15)+1;
     break;
   case 9: // 1 1 1 1 0
-    tmp = ((LFO3_phase < 0x19999999) || ((LFO3_phase > 0x33333333) && (LFO3_phase < 0x4CCCCCCC)) || ((LFO3_phase > 0x66666666) && (LFO3_phase < 0x7FFFFFFF)) || ((LFO3_phase > 0x99999999) && (LFO3_phase < 0xB3333333)) )? (1<<15)-1: -(1<<15)+1;
+    tmp = ((real_phase < 0x19999999) || ((real_phase > 0x33333333) && (real_phase < 0x4CCCCCCC)) || ((real_phase > 0x66666666) && (real_phase < 0x7FFFFFFF)) || ((real_phase > 0x99999999) && (real_phase < 0xB3333333)) )? (1<<15)-1: -(1<<15)+1;
     break;
   case 10: // 1 1 0
-    tmp = ( ((LFO3_phase * 3) & 0x80000000) & LFO3_phase & 0x80000000)? (1<<15)-1: -(1<<15)+1;
+    tmp = ( ((real_phase * 3) & 0x80000000) & real_phase & 0x80000000)? (1<<15)-1: -(1<<15)+1;
     break;
   case 11: // 1 1 0 0 1 0 0 0
-    tmp = ((((LFO3_phase >>28) & 0b1101) == 0b1101) || (((LFO3_phase >>28) & 0b0111 ) == 0b0111))? (1<<15)-1: -(1<<15)+1;
+    tmp = ((((real_phase >>28) & 0b1101) == 0b1101) || (((real_phase >>28) & 0b0111 ) == 0b0111))? (1<<15)-1: -(1<<15)+1;
     break;
   case 12: // random
     tmp = ((LFO3_phase<<3) < LFO3_phase_old)? (random32() >> 16) - (1<<15): modulation_data[mod_LFO3]; 
