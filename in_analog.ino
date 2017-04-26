@@ -117,7 +117,7 @@ inline void analog_in() {
     adc_value_filter[adc_channel] = tmp;
     tmp >>= 6;
   } 
-  else {    
+  else {
     tmp2 = adc_channel - EXT_1; // 0, 1 ou 2
     median_1 = median_data[tmp2][0];
     median_2 = median_data[tmp2][1];
