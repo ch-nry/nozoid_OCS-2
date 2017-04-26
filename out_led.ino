@@ -105,22 +105,18 @@ inline void update_leds() {
   uint32_t time_tmp, tmp32;
   bool led1;
 
-  if (led_ADSR != 0) {
-    led1_on();
+
+  if ( masque_led == 0 ) {
+    if ( led_ADSR != 0 ) led1_on();    
+    else led1_off();
   }
   else {
-    if ((led1_time != 0) ){ 
+    if ((led1_time != 0) ) { 
       led1_time--;
-      if (MODE_MENU) // || currentMenu) 
-        led1_off();
-      else 
-        led1_on();
+      if (MODE_MENU) led1_off(); else led1_on();
     }
     else {
-      if (MODE_MENU) // || currentMenu)
-        led1_on();
-      else 
-        led1_off();
+      if (MODE_MENU) led1_on(); else led1_off();
     }
   }
   
