@@ -2,7 +2,7 @@ Compile the code :
 – get the code there : https://github.com/ch-nry/OCS/tree/master
 – get the latest version of arduinio IDE (I’m using 1.7.10 from here : http://www.arduino.org/downloads)
 – make it work (on linux, I have to change COM1 to /dev/ttyACM0 in the config file, and a $sudo usermod -a -G dialout ). The arduino community is huge, so you will find on the internet how to solve any problem you could face.
-– optimize code speed at compilation (change all 3 occurrences of “-Os” to “-O3” in the configuration file : arduino package/hardware/arduino/sam/platfom.txt). This is VERY important. Otherwise, the code will be to slow and the synth will not work properly.
+– optimize code speed at compilation (change all 3 occurrences of “-Os” to “-O3” in the configuration file : arduino package/hardware/arduino/sam/platfom.txt). This is VERY important. Otherwise, the code will be too slow and the synth will not work properly.
 – if needed, change some option in the conf.h file.
 – unplug the OCS synth power, and plug the programming usb plug of the arduino to the computer using a micro-usb cable.
 – compile and put the code in the arduino
