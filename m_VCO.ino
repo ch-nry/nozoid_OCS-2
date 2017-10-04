@@ -26,6 +26,7 @@ uint32_t dephasage12, dephasage13, dephasage14;
 uint32_t dephasage22, dephasage23, dephasage24;
 uint32_t VCO1_out_save, VCO2_out_save;
 uint32_t mod1_vco1_filter, mod1_vco2_filter, mod2_vco1_filter, mod2_vco2_filter;
+uint32_t finetune_old;
 
 
 inline void init_VCO() {
@@ -51,6 +52,7 @@ inline void VCO1_freq() {
   uint32_t freq, freq_MSB, freq_LSB, increment1, increment2;
   int32_t tmpS;
   uint32_t mod1, mod2;
+  uint32_t finetune;
 
   mod1 = hysteresis16(adc_value16[VCO1_MOD1], mod1_vco1_filter); // TODO : move it to analog in loop 
   mod1_vco1_filter = mod1;
@@ -67,7 +69,14 @@ inline void VCO1_freq() {
   
   freq >>= VCO_FQ_reduce;
   freq += VCO_FQ_offset;
+
   
+#ifdef fine_tune // use Portamento Fader as a fine tunning
+  finetune_old =  hysteresis16(adc_value16[PORTAMENTO_VALUE], finetune_old);
+  finetune = (finetune_old<<5)-(((1<<16)<<5)/2); // offset d'un demis fader du fine tune
+  freq += finetune;
+#endif
+
   tmpS  = ((mod1>>3) * modulation_data[modulation_index[index_VCO1_MOD1]]);
   tmpS += ((mod2>>3) * modulation_data[modulation_index[index_VCO1_MOD2]]);
   freq += tmpS>>3;
@@ -122,6 +131,10 @@ inline void VCO2_freq() {
     freq += VCO_FQ_offset;
     freq += (1<<26) + 0x10000000;
     freq += KEY_LOCAL;
+
+  #ifdef fine_tune // use Portamento Fader as a fine tunning
+    freq += (finetune_old<<5)-(((1<<16)<<5)/2); 
+  #endif
   }
   
   tmpS  = ((mod1>>3) * modulation_data[modulation_index[index_VCO2_MOD1]]);

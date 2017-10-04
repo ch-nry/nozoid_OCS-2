@@ -17,9 +17,9 @@
 
 //you can adjust few option bellow:
 
-// sound caractere.  
+// sound caractere : change a filter in the audio dac.
 #define DAC_clear 1 // 1 for "clear", 0 for "fat"
-  // change a filter in the audio dac.
+
   
 // LFO1 Range
 #define LFO1_range 0 // 1 for extended range
@@ -84,3 +84,8 @@
 
 // output GATE on the dedicated pin
 #define gate_out
+
+// use the portamento fader as a fine-tuning fader
+//#define fine_tune
+
+

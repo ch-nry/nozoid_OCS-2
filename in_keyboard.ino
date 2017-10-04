@@ -439,7 +439,7 @@ inline void keyboard_in() {
           case 7:
             led_VCO1_off();
             led_VCO2_on();
-            and_led1 = 511;
+            and_led1 = 511;  
             and_led2 = 511;
             and_led3 = 511;
             and_led4 = 511;
@@ -729,7 +729,15 @@ inline void PORTAMENTO_update() {
   portamento = (table_CV2freq[0x350-(tmp32>>7)]);
 }
 
+#ifndef fine_tune
 inline void PORTAMENTO() {
     KEY_LOCAL +=  m_s32xs32_s32H(KEY_LOCAL_goal - KEY_LOCAL, portamento);
 }
+#endif
+
+#ifdef fine_tune
+inline void PORTAMENTO() {
+    KEY_LOCAL =  KEY_LOCAL_goal;
+}
+#endif
 
