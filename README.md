@@ -1,4 +1,4 @@
-# OCS-2
+# nozoïd OCS-2
 
 OCS-2 is a synthesizer from NOZOID
 www.nozoid.com
